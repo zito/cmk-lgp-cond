@@ -26,3 +26,17 @@
 ---------------------------------------------------------------------------
 
    For Check_MK see http://mathias-kettner.de/check_mk.html
+
+---------------------------------------------------------------------------
+
+   You need a configured libsnmp to load the MIB module
+   LIEBERT-GP-CONDITIONS-MIB to see translated OID in the check output.
+   For example something like:
+
+	mibdirs +/usr/local/share/mibs/liebert
+	mibs +LIEBERT-GP-CONDITIONS-MIB
+
+   in the /etc/snmp/snmp.conf.
+   Then the check output contains a symbolic OID from the above MIB, e.g.:
+
+	Liebert Conditions   CRIT - 1 condition(s) present: (id: 11, oid: LIEBERT-GP-CONDITIONS-MIB::lgpConditionReplaceBattery(!!), time: 2403)

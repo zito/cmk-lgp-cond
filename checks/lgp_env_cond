@@ -45,6 +45,17 @@
 #  [[['1']], [['761', '.1.3.6.1.4.1.476.1.42.3.2.1.74', '4115079590']]]
 
 
+def lgp_env_cond_oid2symb(oid):
+    symb = None
+    try:
+        snmp_process = os.popen("snmptranslate " + oid, "r")
+        line = snmp_process.readline().strip()
+        if line.find("::") > -1:
+            symb = line
+    except:
+        pass
+    return symb
+
 def inventory_lgp_env_cond(info):
     if len(info) == 0:
         return
@@ -59,9 +70,11 @@ def check_lgp_env_cond(item, params, info):
         return (0, 'OK')
     cond = []
     for id, oid, time in table:
-         cond.append("(id: {}, oid: {}, time: {})".format(id, oid, time))
-    return (2, "CRIT - {} condition(s) present: TODO... ".format(num)
-            + ", ".join(cond))
+        symb = lgp_env_cond_oid2symb(oid)
+        if symb:
+            oid = symb
+        cond.append("(id: {}, oid: {}(!!), time: {})".format(id, oid, time))
+    return (2, "CRIT - {} condition(s) present: ".format(num) + ", ".join(cond))
 
 
 check_info['lgp_env_cond'] = (check_lgp_env_cond,
